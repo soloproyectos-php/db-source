@@ -97,7 +97,6 @@ class DbRecord
     /**
      * Saves the current record.
      * 
-     * @implement DbRecordInterface::save()
      * @return void
      */
     public function save()
@@ -131,7 +130,6 @@ class DbRecord
     /**
      * Fetches column values from database.
      * 
-     * @implement DbRecordAbstract::fetch()
      * @return void
      */
     public function fetch()
