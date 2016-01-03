@@ -144,7 +144,7 @@ class DbRecord
             if (count($columns) > 0) {
                 $row = $this->_db->query($this->_getSelectStatement($columns));
                 foreach ($columns as $column) {
-                    $column->setOriginalValue($row[$column->getName()]);
+                    $column->setDbValue($row[$column->getName()]);
                 }
             }
         }

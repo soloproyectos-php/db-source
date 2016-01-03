@@ -31,10 +31,10 @@ class DbRecordColumn
     private $_name = "";
     
     /**
-     * Original value from database.
+     * Database column value.
      * @var mixed
      */
-    private $_originalValue = null;
+    private $_dbValue = null;
     
     /**
      * Column value.
@@ -43,7 +43,7 @@ class DbRecordColumn
     private $_value = null;
     
     /**
-     * Is the column value updated?
+     * Has the column changed?
      * @var boolean
      */
     private $_hasChanged = false;
@@ -87,7 +87,7 @@ class DbRecordColumn
      */
     public function getValue()
     {
-        return $this->_hasChanged? $this->_value: $this->getOriginalValue();
+        return $this->_hasChanged? $this->_value: $this->getDbValue();
     }
     
     /**
@@ -104,48 +104,46 @@ class DbRecordColumn
     }
     
     /**
-     * Gets original value from database.
+     * Gets database column value.
      * 
      * @return mixed
      */
-    public function getOriginalValue()
+    public function getDbValue()
     {
         if (!$this->_record->isUpdated()) {
             $this->_record->fetch();
         }
-        return $this->_originalValue;
+        return $this->_dbValue;
     }
     
     /**
-     * Sets original database value.
+     * Sets database column value.
      * 
      * @param mixed $value Database value
      * 
      * @return void
      */
-    public function setOriginalValue($value)
+    public function setDbValue($value)
     {
-        $this->_originalValue = $value;
+        $this->_dbValue = $value;
         $this->_value = null;
         $this->_hasChanged = false;
     }
     
     /**
-     * Resets the columns to its original state.
+     * Resets the column to its initial state.
      * 
      * @return void
      */
     public function reset()
     {
-        $this->_originalValue = null;
+        $this->_dbValue = null;
         $this->_value = null;
         $this->_hasChanged = false;
     }
     
     /**
      * Gets a string representation of the column.
-     * 
-     * Actually this method returns the name of the column.
      * 
      * @return string
      */
