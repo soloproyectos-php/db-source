@@ -9,14 +9,14 @@
 namespace soloproyectos\db\record;
 
 /**
- * DbRecordLeftJoin class.
+ * DbRecordTable class.
  *
  * @package Db
  * @author  Gonzalo Chumillas <gchumillas@email.com>
  * @license https://github.com/soloproyectos-php/db-record/blob/master/LICENSE The MIT License (MIT)
  * @link    https://github.com/soloproyectos-php/db-record
  */
-class DbRecordLeftJoin
+class DbRecordTable
 {
     /**
      * Database record.
