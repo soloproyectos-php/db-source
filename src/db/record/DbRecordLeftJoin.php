@@ -49,7 +49,7 @@ class DbRecordLeftJoin
      */
     public function getRecord()
     {
-        return $this->_record->getInternal();
+        return $this->_record;
     }
     
     /**
@@ -70,10 +70,7 @@ class DbRecordLeftJoin
     public function save()
     {
         $this->_record->save();
-        
-        // updates the column index
-        $record = $this->_record->getInternal();
-        $pk = $record->getPrimaryKey();
+        $pk = $this->_record->getPrimaryKey();
         $this->_column->setValue($pk->getValue());
     }
 }
