@@ -45,7 +45,7 @@ class DbRecordTable
     /**
      * Gets the record.
      * 
-     * @return DbRecordAbstract
+     * @return DbRecord
      */
     public function getRecord()
     {
