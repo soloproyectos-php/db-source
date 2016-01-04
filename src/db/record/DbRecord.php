@@ -61,11 +61,22 @@ class DbRecord
      * 
      * @param DbConnector $db        Database connector
      * @param string      $tableName Table name
-     * @param string      $pkName    Primary key name
-     * @param mixed       $pkValue   Primary key value (not required)
+     * @param mixed|array $pk        Primary key (not required)
      */
-    public function __construct($db, $tableName, $pkName, $pkValue = "")
+    public function __construct($db, $tableName, $pk = ["id" => ""])
     {
+        // gets the primary key and value
+        $pkName = "";
+        $pkValue = "";
+        if (!is_array($pk)) {
+            $pk = ["id" => "$pk"];
+        }
+        foreach ($pk as $key => $value) {
+            $pkName = "$key";
+            $pkValue = "$value";
+            break;
+        }
+        
         $this->_db = $db;
         $this->_tableName = $tableName;
         $this->_primaryKey = new DbRecordColumn($this, $pkName);
