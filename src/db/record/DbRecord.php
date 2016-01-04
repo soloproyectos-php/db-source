@@ -157,13 +157,17 @@ class DbRecord
     /**
      * Fetches column values from database.
      * 
-     * @param string[] $colPaths Column paths
+     * @param array|mixed $colPaths Column paths
      * 
-     * @return mixed[]
+     * @return mixed|mixed[]
      */
     public function fetch($colPaths = [])
     {
         $ret = [];
+        $isArrayColPaths = is_array($colPaths);
+        if (!$isArrayColPaths) {
+            $colPaths = [$colPaths];
+        }
         
         if (count($colPaths) > 0) {
             // registers columns and fetches values
@@ -175,6 +179,9 @@ class DbRecord
             }
             foreach ($cols as $col) {
                 array_push($ret, $col->getValue());
+            }
+            if (!$isArrayColPaths) {
+                $ret = $ret[0];
             }
         } else {
             if ($this->_primaryKey->hasChanged()) {
