@@ -116,6 +116,13 @@ class DbRecord
     {
         $ret = [];
         
+        // method overloading
+        if (func_num_args() > 1) {
+            $colPath = func_get_arg(0);
+            $colVal = func_get_arg(1);
+            $colVals = [$colPath => $colVal];
+        }
+        
         if (count($colVals) > 0) {
             // registers columns and saves
             $this->_tables = [];
@@ -164,6 +171,8 @@ class DbRecord
     public function fetch($colPaths = [])
     {
         $ret = [];
+        
+        // method overloading
         $isArrayColPaths = is_array($colPaths);
         if (!$isArrayColPaths) {
             $colPaths = [$colPaths];
