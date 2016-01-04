@@ -125,11 +125,10 @@ class DbRecord
         
         if (count($colVals) > 0) {
             // registers columns and saves
-            $this->_tables = [];
-            $this->_columns = [];
-            foreach ($colVals as $colPath => $colVal) {
-                $col = $this->regColumn($colPath);
-                $col->setValue($colVal);
+            $cols = $this->_regColumns(array_keys($colVals));
+            $vals = array_values($colVals);
+            foreach ($cols as $i => $col) {
+                $col->setValue($vals[$i]);
             }
             $this->save();
         } else {
@@ -180,12 +179,7 @@ class DbRecord
         
         if (count($colPaths) > 0) {
             // registers columns and fetches values
-            $this->_tables = [];
-            $this->_columns = [];
-            $cols = [];
-            foreach ($colPaths as $colPath) {
-                array_push($cols, $this->regColumn($colPath));
-            }
+            $cols = $this->_regColumns($colPaths);
             foreach ($cols as $col) {
                 array_push($ret, $col->getValue());
             }
@@ -441,5 +435,25 @@ class DbRecord
         
         $tableName = Db::quoteId($this->_tableName);
         return "insert into $tableName($cols) values($vals)";
+    }
+    
+    /**
+     * Registers a list of columns.
+     * 
+     * This method empties the current tables and columns and registers a list of columns.
+     * 
+     * @param string[] $colPaths Column paths
+     * 
+     * @return DbRecordColumn[]
+     */
+    private function _regColumns($colPaths)
+    {
+        $ret  =[];
+        $this->_tables = [];
+        $this->_columns = [];
+        foreach ($colPaths as $colPath) {
+            array_push($ret, $this->regColumn($colPath));
+        }
+        return $ret;
     }
 }
