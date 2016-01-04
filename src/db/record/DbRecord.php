@@ -97,57 +97,91 @@ class DbRecord
     /**
      * Saves the current record.
      * 
+     * @param array $colVals Column values
+     * 
      * @return void
      */
-    public function save()
+    public function save($colVals = [])
     {
-        // first saves the 'left join' tables
-        foreach ($this->_tables as $table) {
-            $table->save();
-        }
+        $ret = [];
         
-        $columns = $this->_getChangedColumns();
-        if ($this->_primaryKey->hasChanged()) {
-            // update
-            if (count($columns) > 0) {
-                $this->_db->exec($this->_getUpdateStatement($columns));
+        if (count($colVals) > 0) {
+            // registers columns and saves
+            $this->_tables = [];
+            $this->_columns = [];
+            foreach ($colVals as $colPath => $colVal) {
+                $col = $this->regColumn($colPath);
+                $col->setValue($colVal);
             }
+            $this->save();
         } else {
-            // insert
-            $this->_db->exec($this->_getInsertStatement($columns));
-            $row = $this->_db->query("select last_insert_id() as id");
-            $this->_primaryKey->setValue($row["id"]);
+            // first saves the 'left join' tables
+            foreach ($this->_tables as $table) {
+                $table->save();
+            }
+            
+            $columns = $this->_getChangedColumns();
+            if ($this->_primaryKey->hasChanged()) {
+                // update
+                if (count($columns) > 0) {
+                    $this->_db->exec($this->_getUpdateStatement($columns));
+                }
+            } else {
+                // insert
+                $this->_db->exec($this->_getInsertStatement($columns));
+                $row = $this->_db->query("select last_insert_id() as id");
+                $this->_primaryKey->setValue($row["id"]);
+            }
+            
+            // resets columns
+            foreach ($columns as $column) {
+                $column->reset();
+            }
+            $this->_isUpdated = false;
         }
         
-        // resets columns
-        foreach ($columns as $column) {
-            $column->reset();
-        }
-        
-        $this->_isUpdated = false;
+        return $ret;
     }
     
     /**
      * Fetches column values from database.
      * 
-     * @return void
+     * @param string[] $colPaths Column paths
+     * 
+     * @return mixed[]
      */
-    public function fetch()
+    public function fetch($colPaths = [])
     {
-        if ($this->_primaryKey->hasChanged()) {
-            // gets the columns that haven't changed
-            $columns = array_diff($this->_columns, $this->_getChangedColumns());
-            
-            // fills columns
-            if (count($columns) > 0) {
-                $row = $this->_db->query($this->_getSelectStatement($columns));
-                foreach ($columns as $column) {
-                    $column->setDbValue($row[$column->getName()]);
+        $ret = [];
+        
+        if (count($colPaths) > 0) {
+            // registers columns and fetches values
+            $this->_tables = [];
+            $this->_columns = [];
+            $cols = [];
+            foreach ($colPaths as $colPath) {
+                array_push($cols, $this->regColumn($colPath));
+            }
+            foreach ($cols as $col) {
+                array_push($ret, $col->getValue());
+            }
+        } else {
+            if ($this->_primaryKey->hasChanged()) {
+                // gets the columns that haven't changed
+                $columns = array_diff($this->_columns, $this->_getChangedColumns());
+                
+                // fills columns
+                if (count($columns) > 0) {
+                    $row = $this->_db->query($this->_getSelectStatement($columns));
+                    foreach ($columns as $column) {
+                        $column->setDbValue($row[$column->getName()]);
+                    }
                 }
             }
+            $this->_isUpdated = true;
         }
         
-        $this->_isUpdated = true;
+        return $ret;
     }
     
     /**
