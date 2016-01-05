@@ -339,6 +339,26 @@ class DbRecord
     }
     
     /**
+     * Registers a list of columns.
+     * 
+     * This method empties the current tables and columns and registers a list of columns.
+     * 
+     * @param string[] $colPaths Column paths
+     * 
+     * @return DbRecordColumn[]
+     */
+    private function _regColumns($colPaths)
+    {
+        $ret  =[];
+        $this->_tables = [];
+        $this->_columns = [];
+        foreach ($colPaths as $colPath) {
+            array_push($ret, $this->regColumn($colPath));
+        }
+        return $ret;
+    }
+    
+    /**
      * Adds colum.
      * 
      * @param DbRecordColumn $column Column
@@ -514,25 +534,5 @@ class DbRecord
         $pkName = Db::quoteId($this->_primaryKey->getName());
         $pkValue = $this->_db->quote($this->_primaryKey->getValue());
         return "delete from $tableName where $pkName = $pkValue";
-    }
-    
-    /**
-     * Registers a list of columns.
-     * 
-     * This method empties the current tables and columns and registers a list of columns.
-     * 
-     * @param string[] $colPaths Column paths
-     * 
-     * @return DbRecordColumn[]
-     */
-    private function _regColumns($colPaths)
-    {
-        $ret  =[];
-        $this->_tables = [];
-        $this->_columns = [];
-        foreach ($colPaths as $colPath) {
-            array_push($ret, $this->regColumn($colPath));
-        }
-        return $ret;
     }
 }
