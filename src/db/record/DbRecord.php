@@ -242,7 +242,7 @@ class DbRecord
     /**
      * Deletes the current record.
      * 
-     * This method deletes the current record and all linked records.
+     * This method deletes the current record and also all linked records.
      * 
      * Example:
      * ```php
@@ -258,6 +258,17 @@ class DbRecord
      * 
      * // deletes the current record and a list of linked records
      * $r->delete("table1", "table2", "table3");
+     * 
+     * // creates a new record and, after that, deletes the
+     * // linked records (table1, table2 and table3)
+     * $r = new DbRecord($db, "table0");
+     * $r->save([
+     *     "label" => "xxx",
+     *     "table1.label" => "aaa",
+     *     "table2.label" => "bbb",
+     *     "table3.label" => "ccc"
+     * ]);
+     * $r->delete();
      * ```
      * 
      * @param string[] $tablePaths List of table paths
