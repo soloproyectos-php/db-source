@@ -240,6 +240,24 @@ class DbRecord
     /**
      * Deletes the current record.
      * 
+     * This method deletes the current record and all linked records.
+     * 
+     * Example:
+     * ```php
+     * // deletes the current record
+     * $r->delete();
+     * 
+     * // deletes the current record and the linked record
+     * // 'table1' is linked to 'table0' by the 'table1[id = table1_id]' condition
+     * $r->delete("table1[id = table1_id]");
+     * 
+     * // or more briefly
+     * $r->delete("table1");
+     * 
+     * // deletes the current record and a list of linked records
+     * $r->delete("table1", "table2", "table3");
+     * ```
+     * 
      * @param string[] $tablePaths List of table paths
      * 
      * @return void
