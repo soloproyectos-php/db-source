@@ -11,7 +11,7 @@ use soloproyectos\db\Db;
 use soloproyectos\text\Text;
 
 /**
- * DbRecord class.
+ * With this class you can insert, edit or delete records in a database table.
  *
  * @package Db
  * @author  Gonzalo Chumillas <gchumillas@email.com>
@@ -58,6 +58,20 @@ class DbRecord
     
     /**
      * Constructor.
+     * 
+     * Examples:
+     * ```php
+     * // the following instance represents a NEW record
+     * $r = new DbRecord($db, "my_table");
+     * 
+     * // the following instance represents an EXISTING record
+     * $r = new DbRecord($db, "my_table", $id);
+     * 
+     * // By default the primary key name is "id".
+     * // But you can change it in the constructor:
+     * $r = new DbRecord($db, "my_table", ["pk" => ""]);  // new record
+     * $r = new DbRecord($db, "my_table", ["pk" => $id]); // existing record
+     * ```
      * 
      * @param DbConnector $db        Database connector
      * @param string      $tableName Table name
@@ -107,6 +121,15 @@ class DbRecord
     
     /**
      * Saves the current record.
+     * 
+     * Examples:
+     * ```php
+     * // saves a single column
+     * $r->save("col0", "val0");
+     * 
+     * // saves multiple columns
+     * $r->save(["col0" => "val0", "col1" => "val1", "col2" => "val2"]);
+     * ```
      * 
      * @param array $colVals Column values
      * 
@@ -163,6 +186,15 @@ class DbRecord
     /**
      * Fetches column values from database.
      * 
+     * Examples:
+     * ```php
+     * // fetches a single column
+     * $col0 = $r->fetch("col0");
+     * 
+     * // fetches multiple columns
+     * list($col0, $col1, $col2) = $this->fetch(["col0", "col1", "col2"]);
+     * ```
+     * 
      * @param array|mixed $colPaths Column paths
      * 
      * @return mixed|mixed[]
@@ -208,6 +240,20 @@ class DbRecord
     /**
      * Registers a column.
      * 
+     * The following example registers a simple column
+     * ```php
+     * $col = $r->regCol("col0");
+     * ```
+     * 
+     * The following example registers a complex column
+     * ```php
+     * // 'table1' is linked to 'table0' by the 'id = table1_id' condition
+     * $col = $r->regCol("table1[id = table1_id].col0");
+     * 
+     * // or more briefly
+     * $col = $r->regCol("table1.col0");
+     * ```
+     * 
      * This method adds a column only if not already added.
      * 
      * @param string $colPath Column path
@@ -236,6 +282,15 @@ class DbRecord
     
     /**
      * Registers a 'left join' table.
+     * 
+     * Example:
+     * ```php
+     * // 'table1' is linked to 'table0' by the 'id = table1_id' condition
+     * $t = $r->regTable("table1[id = table1_id]");
+     * 
+     * // or more briefly
+     * $t = $r->regTable("table1");
+     * ```
      * 
      * @param string $tablePath Table path
      * 
