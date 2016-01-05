@@ -90,7 +90,6 @@ class DbRecord
             $pkValue = "$value";
             break;
         }
-        echo "$pkName: $pkValue\n";
         
         $this->_db = $db;
         $this->_tableName = $tableName;
@@ -349,7 +348,7 @@ class DbRecord
         if ($table === null) {
             $table = $this->_addTable(
                 new DbRecordTable(
-                    new DbRecord($this->_db, $tableName, $pkName, $column->getValue()),
+                    new DbRecord($this->_db, $tableName, [$pkName => $column->getValue()]),
                     $column
                 )
             );
