@@ -12,6 +12,8 @@ use soloproyectos\text\Text;
 
 /**
  * With this class you can insert, edit or delete records in a database table.
+ * 
+ * The only condition is that tables MUST HAVE a single auto-incrementable primary key.
  *
  * @package Db
  * @author  Gonzalo Chumillas <gchumillas@email.com>
