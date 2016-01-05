@@ -375,9 +375,10 @@ class DbRecord
         }
 
         $column = $this->regColumn($colName);
-        $table = $this->_searchTable($tableName, $pkName, $column->getName());
+        $record = $column->getRecord();
+        $table = $record->_searchTable($tableName, $pkName, $column->getName());
         if ($table === null) {
-            $table = $this->_addTable(
+            $table = $record->_addTable(
                 new DbRecordTable(
                     new DbRecord($this->_db, $tableName, [$pkName => $column->getValue()]),
                     $column

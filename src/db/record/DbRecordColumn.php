@@ -61,6 +61,16 @@ class DbRecordColumn
     }
     
     /**
+     * Gets the parent record.
+     * 
+     * @return DbRecord
+     */
+    public function getRecord()
+    {
+        return $this->_record;
+    }
+    
+    /**
      * Gets the column name.
      * 
      * @return string
