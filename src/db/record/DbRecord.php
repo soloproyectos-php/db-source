@@ -238,6 +238,17 @@ class DbRecord
     }
     
     /**
+     * Deletes the current record.
+     * 
+     * @return void
+     */
+    public function delete()
+    {
+        $this->_db->exec($this->_getDeleteStatement());
+        $this->_isUpdated = true;
+    }
+    
+    /**
      * Registers a column.
      * 
      * The following example registers a simple column
@@ -490,6 +501,19 @@ class DbRecord
         
         $tableName = Db::quoteId($this->_tableName);
         return "insert into $tableName($cols) values($vals)";
+    }
+    
+    /**
+     * Gets the SQL DELETE statement.
+     * 
+     * @return string
+     */
+    private function _getDeleteStatement()
+    {
+        $tableName = Db::quoteId($this->_tableName);
+        $pkName = Db::quoteId($this->_primaryKey->getName());
+        $pkValue = $this->_db->quote($this->_primaryKey->getValue());
+        return "delete from $tableName where $pkName = $pkValue";
     }
     
     /**
