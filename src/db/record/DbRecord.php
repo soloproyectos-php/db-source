@@ -90,6 +90,7 @@ class DbRecord
             $pkValue = "$value";
             break;
         }
+        echo "$pkName: $pkValue\n";
         
         $this->_db = $db;
         $this->_tableName = $tableName;
@@ -240,12 +241,31 @@ class DbRecord
     /**
      * Deletes the current record.
      * 
+     * @param string[] $tablePaths List of table paths
+     * 
      * @return void
      */
-    public function delete()
+    public function delete($tablePaths = [])
     {
-        $this->_db->exec($this->_getDeleteStatement());
-        $this->_isUpdated = true;
+        if (count($tablePaths) > 0) {
+            // registers tables and deletes
+            $this->_tables = [];
+            $this->_columns = [];
+            foreach ($tablePaths as $tablePath) {
+                $this->regTable($tablePath);
+            }
+            $this->delete();
+        } else {
+            // first deletes linked records
+            foreach ($this->_tables as $table) {
+                $record = $table->getRecord();
+                $record->delete();
+            }
+            
+            // and finally deletes the current record
+            $this->_db->exec($this->_getDeleteStatement());
+            $this->_isUpdated = true;
+        }
     }
     
     /**
